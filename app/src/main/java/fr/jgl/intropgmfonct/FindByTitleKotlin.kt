@@ -4,40 +4,31 @@ class FindByTitleKotlin {
 
     companion object {
 
-        // findByTitle :: (String, [Movie]) -> [Movie]
-        fun findByTitle(query: String, collection: MutableList<Movie>): List<Movie>{
+        val findByTitle = {query: String -> {collection: MutableList<Movie> ->
             var results: List<Movie> = listOf()
 
-            // matches :: (String, Film) -> Boolean
-            val predicate = ::matches
+            val predicate = matches
 
-            // add :: (Film) -> Boolean
-            val add = fun (movie: Movie) = fun (movies: List<Movie>) = movies.plus(movie)
+            val add = {movie: Movie -> {movies: List<Movie> -> movies.plus(movie)}}
 
             for (movie: Movie in collection){
-                val fn = addIf(predicate, query, movie, add)
-                results = fn(results)
+                results = addIf(predicate)(query)(movie)(add)(results)
             }
+            results
+        }}
 
-            return results
-        }
+        val addIf = {predicate: (String) -> (Movie) -> Boolean ->  {query: String -> {movie: Movie -> {add: (Movie) -> (List<Movie>) -> List<Movie> ->
+            if (matches(query)(movie))
+                add(movie)
+            else
+                fun (movies: List<Movie>) = listOf<Movie>()
+        }}}}
 
-        // addIfMatches :: ((String, Movie) -> Boolean, String, Movie, [Movie] -> (Boolean)) -> (Movie) -> (Boolean)
-        fun addIf(predicate: (String, Movie) -> Boolean, query: String, movie: Movie, add: (Movie) -> (List<Movie>) -> List<Movie>): (List<Movie>) -> List<Movie>{
-            if (predicate(query, movie)){
-                return add(movie)
-            }
-            return fun (movies: List<Movie>) = listOf<Movie>()
-        }
+        val matches = {query: String -> { movie: Movie -> isInfixOf(query) (title(movie))}}
 
-        // matches :: (String, Film) -> Boolean
-        fun matches(query: String, movie: Movie): Boolean = title(movie).isInfixOf(query)
+        val title = {movie: Movie -> movie.title}
 
-        // title :: (Film) -> String
-        fun title(movie: Movie): String = movie.title
-
-        // isInfixOf :: (String, String) -> Boolean
-        fun String.isInfixOf(query: String) = contains(query)
+        val isInfixOf = {query: String -> {string: String -> string.contains(query)}}
 
     }
 }
