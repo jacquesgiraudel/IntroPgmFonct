@@ -4,20 +4,20 @@ class FindByTitleKotlin {
 
     companion object {
 
-        val findByTitle = {query: String -> {collection: MutableList<Movie> ->
+        var findByTitle: (String) -> (MutableList<Movie>) -> List<Movie> = { query -> { collection ->
             val predicate = matches(query)
             filter(predicate)(collection)
         }}
 
-        val filter = {predicate: (Movie) -> Boolean -> {collection: List<Movie> ->
+        val filter: ((Movie) -> Boolean) -> (List<Movie>) -> List<Movie> = { predicate -> { collection ->
             collection.filter(predicate)
         }}
 
-        val matches = {query: String -> { movie: Movie -> isInfixOf(query) (title(movie))}}
+        val matches: (String) -> (Movie) -> Boolean = { query -> { movie -> isInfixOf(query) (title(movie))}}
 
-        val title = {movie: Movie -> movie.title}
+        val title: (Movie) -> String = { movie -> movie.title}
 
-        val isInfixOf = {query: String -> {string: String -> string.contains(query)}}
+        val isInfixOf: (String) -> (String) -> Boolean = { query -> { string -> string.contains(query)}}
 
     }
 }
