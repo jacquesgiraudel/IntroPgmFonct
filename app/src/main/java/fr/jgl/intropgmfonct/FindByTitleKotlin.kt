@@ -16,6 +16,7 @@ class FindByTitleKotlin {
             return results
         }
 
+        // TODO Side effect (results, because modified outside its local environment)
         fun addIfMatches(query: String, movie: Movie, results: MutableList<Movie>){
             if (matches(query, movie)){
                 results.add(movie)
