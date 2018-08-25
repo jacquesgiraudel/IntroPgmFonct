@@ -12,22 +12,22 @@ class FindByTitleKotlin {
             val predicate = ::matches
 
             // add :: (Film) -> Boolean
-            val add = fun (movie: Movie, movies: List<Movie>) = movies.plus(movie)
+            val add = fun (movie: Movie) = fun (movies: List<Movie>) = movies.plus(movie)
 
             for (movie: Movie in collection){
                 val fn = addIf(predicate, query, movie, add)
-                results = fn(movie, results)
+                results = fn(movie)(results)
             }
 
             return results
         }
 
         // addIfMatches :: ((String, Movie) -> Boolean, String, Movie, [Movie] -> (Boolean)) -> (Movie) -> (Boolean)
-        fun addIf(predicate: (String, Movie) -> Boolean, query: String, movie: Movie, add: (Movie, List<Movie>) -> (List<Movie>)): (Movie, List<Movie>) -> (List<Movie>){
+        fun addIf(predicate: (String, Movie) -> Boolean, query: String, movie: Movie, add: (Movie) -> (List<Movie>) -> List<Movie>): (Movie) -> (List<Movie>) -> List<Movie>{
             if (predicate(query, movie)){
                 return add
             }
-            return fun (movie: Movie, movies: List<Movie>) = listOf<Movie>()
+            return fun (movie: Movie) = fun (movies: List<Movie>) = listOf<Movie>()
         }
 
         // matches :: (String, Film) -> Boolean
